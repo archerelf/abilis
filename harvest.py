@@ -15,10 +15,11 @@ def getEntityProperties(entityId):
     req = requests.get(httpReq)
     return req
 
-def getLabelsFromJson(js, prefixChar="Q"):
-    return js["entities"][prefixChar+str(i)]['aliases'] 
+def getLabelsFromJson(i, js, prefixChar="Q"):
+    print(js["entities"].keys())
+    return js["entities"][prefixChar+str(i)]['labels'] 
 
-def getClaimsFromJson(js, prefixChar="Q"):
+def getClaimsFromJson(i, js, prefixChar="Q"):
     return js["entities"][prefixChar+str(i)]['claims'] 
 
 artId = 17514
@@ -27,7 +28,10 @@ for i in x:
     y = getEntityProperties(i)
     print(y.json().keys())
     for prop in [31,135]:
-        propDict = getClaimsFromJson(y.json())
+        propDict = getClaimsFromJson(i, y.json())
         propStr = 'P'+str(prop)
         if(propStr in propDict):
-            print(propDict[propStr][0]['mainsnak']['datavalue']['value']['numeric-id'])
+            currEntity =propDict[propStr][0]['mainsnak']['datavalue']['value']['numeric-id']
+            print(currEntity)
+            labelDict = getLabelsFromJson(currEntity, getEntityProperties(currEntity).json())
+            print(labelDict["en"]["value"])
